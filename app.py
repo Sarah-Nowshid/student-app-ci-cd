@@ -6,7 +6,7 @@ students = []
 
 @app.route("/")
 def home():
-    return "Student Management System is Running"
+    return "Student Management System is Running yaaayyy"
 
 @app.route("/add-student", methods=["POST"])
 def add_student():
