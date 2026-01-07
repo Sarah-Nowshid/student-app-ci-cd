@@ -16,7 +16,8 @@ jobs:
       - name: Set up Python
         uses: actions/setup-python@v4
         with:
-          python-version: 3.10
+          python-version: 3.13
+          
 
       - name: Install dependencies
         run: |
@@ -41,3 +42,24 @@ jobs:
       - name: Build Docker image
         run: |
           docker build -t student-management-app .
+
+  deploy:
+    runs-on: ubuntu-latest
+    needs: docker-build
+
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v3
+
+      - name: Deploy to Azure VM via SSH
+        uses: appleboy/ssh-action@v0.1.7
+        with:
+          host: ${{ secrets.AZURE_VM_IP }}
+          username: sarah
+          key: ${{ secrets.AZURE_SSH_KEY }}
+          port: 22
+          script: |
+            cd ~/student-management
+            docker-compose down
+            docker-compose up -d --build
+
